@@ -3,6 +3,7 @@ from aiogram.filters import CommandStart
 from aiogram.types import Message
 
 from bot.database.session import SessionLocal
+from bot.handlers.tasks import _render_tasks
 from bot.keyboards.main_menu import bottom_menu, wallet_inline
 from bot.services.user_service import get_or_create_user
 
@@ -28,11 +29,21 @@ async def cmd_start(message: Message):
             referred_by=referrer_id,
         )
 
-    text = (
-        f"🐝 <b>HaiiveBOT</b>\n\n"
+    # 1. Wallet card + bottom reply keyboard
+    await message.answer(
+        f"🐝 <b>Welcome to HaiiveBOT</b>\n\n"
         f"<b>Available balance</b>\n"
         f"<b>{user.balance:,.2f} USDT</b>\n"
-        f"▲ {user.today_earned:.2f} today"
+        f"▲ {user.today_earned:.2f} today",
+        reply_markup=bottom_menu(),
+        parse_mode="HTML",
     )
-    await message.answer(text, reply_markup=bottom_menu(), parse_mode="HTML")
-    await message.answer("Quick actions:", reply_markup=wallet_inline())
+
+    # 2. Quick actions
+    await message.answer(
+        "Quick actions:",
+        reply_markup=wallet_inline(),
+    )
+
+    # 3. Tasks list right away
+    await _render_tasks(message.from_user.id, message.answer)
