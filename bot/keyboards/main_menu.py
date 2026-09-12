@@ -32,31 +32,44 @@ def wallet_inline() -> InlineKeyboardMarkup:
 
 def tasks_inline(tasks_with_status: list[dict]) -> InlineKeyboardMarkup:
     """
-    If a task has a URL, make the button open the URL directly (like an ad).
-    Otherwise, use a callback button that shows the task's detail message.
+    URL tasks: a URL button (opens Chrome) + a claim button below.
+    Other tasks: a callback button that opens the detail view.
+    Done tasks: a single grey 'Done' button.
     """
     rows = []
     for t in tasks_with_status:
         if t["done"]:
-            label = f"✅ {t['title']} — Done"
             rows.append(
                 [
                     InlineKeyboardButton(
-                        text=label, callback_data="task_done"
+                        text=f"✅ {t['title']} — Done",
+                        callback_data="task_done",
                     )
                 ]
             )
         elif t.get("url"):
-            label = f"{t['icon']} {t['title']}  +{t['reward']:.2f}"
-            rows.append(
-                [InlineKeyboardButton(text=label, url=t["url"])]
-            )
-        else:
-            label = f"{t['icon']} {t['title']}  +{t['reward']:.2f}"
             rows.append(
                 [
                     InlineKeyboardButton(
-                        text=label, callback_data=f"task_open:{t['id']}"
+                        text=f"{t['icon']} {t['title']}  +{t['reward']:.2f}",
+                        url=t["url"],
+                    )
+                ]
+            )
+            rows.append(
+                [
+                    InlineKeyboardButton(
+                        text="✅ I've completed this",
+                        callback_data=f"task_claim:{t['id']}",
+                    )
+                ]
+            )
+        else:
+            rows.append(
+                [
+                    InlineKeyboardButton(
+                        text=f"{t['icon']} {t['title']}  +{t['reward']:.2f}",
+                        callback_data=f"task_open:{t['id']}",
                     )
                 ]
             )
