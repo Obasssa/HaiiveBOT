@@ -25,6 +25,11 @@ async def tasks_cb(callback: CallbackQuery):
     await callback.answer()
 
 
+@router.callback_query(F.data == "task_done")
+async def task_done(callback: CallbackQuery):
+    await callback.answer("✅ Already completed", show_alert=True)
+
+
 async def _render_tasks(user_id: int, sender):
     async with SessionLocal() as session:
         tasks = await list_tasks(session)
@@ -36,6 +41,7 @@ async def _render_tasks(user_id: int, sender):
                     "icon": t.icon,
                     "title": t.title,
                     "reward": t.reward,
+                    "url": t.url or "",
                     "done": await is_completed(session, user_id, t.id),
                 }
             )
