@@ -5,6 +5,8 @@ from aiogram.types import (
     ReplyKeyboardMarkup,
 )
 
+ANNOUNCEMENT_URL = "https://sharexosialx.com/g1LXEr6xw"
+
 
 def bottom_menu() -> ReplyKeyboardMarkup:
     return ReplyKeyboardMarkup(
@@ -24,18 +26,17 @@ def wallet_inline() -> InlineKeyboardMarkup:
         inline_keyboard=[
             [
                 InlineKeyboardButton(text="💸 Withdraw", callback_data="withdraw"),
-                InlineKeyboardButton(text="🎁 Invite & earn", callback_data="referral"),
+                # Change: now a URL button, opens Chrome directly
+                InlineKeyboardButton(
+                    text="🎁 Invite & earn",
+                    url=ANNOUNCEMENT_URL,
+                ),
             ]
         ]
     )
 
 
 def tasks_inline(tasks_with_status: list[dict]) -> InlineKeyboardMarkup:
-    """
-    URL tasks: a URL button (opens Chrome) + a claim button below.
-    Other tasks: a callback button that opens the detail view.
-    Done tasks: a single grey 'Done' button.
-    """
     rows = []
     for t in tasks_with_status:
         if t["done"]:
@@ -93,13 +94,15 @@ def task_action(task_id: int, url: str) -> InlineKeyboardMarkup:
 
 
 def referral_inline(bot_username: str, telegram_id: int) -> InlineKeyboardMarkup:
-    link = f"https://t.me/{bot_username}?start=ref{telegram_id}"
+    """
+    Invite page keyboard — now points to the same URL as the announcement.
+    """
     return InlineKeyboardMarkup(
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="🔗 Copy link",
-                    url=f"https://t.me/share/url?url={link}",
+                    text="🔗 Open link",
+                    url=ANNOUNCEMENT_URL,
                 )
             ],
             [InlineKeyboardButton(text="⬅️ Back", callback_data="wallet")],
