@@ -13,12 +13,12 @@ async def show_profile(callback: CallbackQuery):
         user = await get_user(session, callback.from_user.id)
 
     await callback.message.edit_text(
-        f"👤 <b>Your Profile</b>\n\n"
+        f"👤 <b>Profile</b>\n\n"
         f"ID: <code>{user.telegram_id}</code>\n"
-        f"Username: @{user.username or 'N/A'}\n"
+        f"Username: @{user.username or '—'}\n"
         f"Balance: <b>{user.balance:.2f} USDT</b>\n"
-        f"Referred by: {user.referred_by or 'Nobody'}\n"
-        f"Joined: {user.created_at.strftime('%Y-%m-%d')}",
+        f"Invited: <b>{user.invited_count}</b>\n"
+        f"Referral earned: <b>{user.referral_earned:.2f} USDT</b>",
         parse_mode="HTML",
     )
     await callback.answer()
