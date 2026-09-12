@@ -31,15 +31,35 @@ def wallet_inline() -> InlineKeyboardMarkup:
 
 
 def tasks_inline(tasks_with_status: list[dict]) -> InlineKeyboardMarkup:
+    """
+    If a task has a URL, make the button open the URL directly (like an ad).
+    Otherwise, use a callback button that shows the task's detail message.
+    """
     rows = []
     for t in tasks_with_status:
         if t["done"]:
             label = f"✅ {t['title']} — Done"
-            cb = "task_done"
+            rows.append(
+                [
+                    InlineKeyboardButton(
+                        text=label, callback_data="task_done"
+                    )
+                ]
+            )
+        elif t.get("url"):
+            label = f"{t['icon']} {t['title']}  +{t['reward']:.2f}"
+            rows.append(
+                [InlineKeyboardButton(text=label, url=t["url"])]
+            )
         else:
             label = f"{t['icon']} {t['title']}  +{t['reward']:.2f}"
-            cb = f"task_open:{t['id']}"
-        rows.append([InlineKeyboardButton(text=label, callback_data=cb)])
+            rows.append(
+                [
+                    InlineKeyboardButton(
+                        text=label, callback_data=f"task_open:{t['id']}"
+                    )
+                ]
+            )
     return InlineKeyboardMarkup(inline_keyboard=rows)
 
 
@@ -63,7 +83,12 @@ def referral_inline(bot_username: str, telegram_id: int) -> InlineKeyboardMarkup
     link = f"https://t.me/{bot_username}?start=ref{telegram_id}"
     return InlineKeyboardMarkup(
         inline_keyboard=[
-            [InlineKeyboardButton(text="🔗 Copy link", url=f"https://t.me/share/url?url={link}")],
+            [
+                InlineKeyboardButton(
+                    text="🔗 Copy link",
+                    url=f"https://t.me/share/url?url={link}",
+                )
+            ],
             [InlineKeyboardButton(text="⬅️ Back", callback_data="wallet")],
         ]
     )
