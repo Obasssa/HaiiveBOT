@@ -26,11 +26,9 @@ async def _render(event, sender):
     async with SessionLocal() as session:
         user = await get_user(session, user_id)
 
-    link = f"https://t.me/{bot_info.username}?start=ref{user.telegram_id}"
     text = (
         "👥 <b>Invite friends</b>\n"
         "Earn 10% of what your referrals make, forever.\n\n"
-        f"🔗 <code>{link}</code>\n\n"
         f"👥 <b>{user.invited_count}</b>      💰 <b>{user.referral_earned:.2f}</b>\n"
         f"     Invited           Earned"
     )
