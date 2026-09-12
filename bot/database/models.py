@@ -53,3 +53,14 @@ class Activity(Base):
     label: Mapped[str] = mapped_column(String(128))
     amount: Mapped[float] = mapped_column(Float)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
+
+
+class Withdrawal(Base):
+    __tablename__ = "withdrawals"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(BigInteger, index=True)
+    amount: Mapped[float] = mapped_column(Float)
+    address: Mapped[str] = mapped_column(String(256))
+    status: Mapped[str] = mapped_column(String(16), default="pending")
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
