@@ -29,7 +29,6 @@ async def cmd_start(message: Message):
             referred_by=referrer_id,
         )
 
-    # 1. Wallet card + bottom reply keyboard
     await message.answer(
         f"🐝 <b>Welcome to HaiiveBOT</b>\n\n"
         f"<b>Available balance</b>\n"
@@ -39,11 +38,6 @@ async def cmd_start(message: Message):
         parse_mode="HTML",
     )
 
-    # 2. Quick actions
-    await message.answer(
-        "Quick actions:",
-        reply_markup=wallet_inline(),
-    )
+    await message.answer("Quick actions:", reply_markup=wallet_inline())
 
-    # 3. Tasks list right away
     await _render_tasks(message.from_user.id, message.answer)
